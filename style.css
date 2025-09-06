@@ -6,15 +6,15 @@ body {
 
 #board {
   display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
-  gap: 4px;
-  position: relative;
-  margin: 20px auto;
+  grid-template-columns: repeat(5, 1fr); /* ← 3 → 5 に変更 */
+  grid-template-rows: repeat(5, 1fr);    /* ← 3 → 5 に変更 */
+  width: 500px;
+  height: 500px;
 }
 
 .cell {
   position: relative;
+  box-sizing: border-box; /* ← 追加 */
   width: 100px;
   height: 100px;
   background-color: #d2b48c;
@@ -46,7 +46,7 @@ body {
 }
 
 .cell.selected {
-  outline: 3px solid blue;
+  box-shadow: 0 0 0 3px blue inset;
 }
 
 .cell.valid-move {

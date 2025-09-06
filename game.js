@@ -1,14 +1,21 @@
 const board = document.getElementById('board');
-let cells = Array(9).fill(null);
+let cells = Array(25).fill(null); // ← 9 → 25 に変更
 let turn = 'player';
 
 // 初期配置
-cells[6] = 'P';
-cells[7] = 'P';
-cells[8] = 'P';
+// プレイヤー（下段）
+cells[20] = 'P';
+cells[21] = 'P';
+cells[22] = 'P';
+cells[23] = 'P';
+cells[24] = 'P';
+
+// 敵（上段）
 cells[0] = 'E';
 cells[1] = 'E';
 cells[2] = 'E';
+cells[3] = 'E';
+cells[4] = 'E';
 
 function render() {
   board.innerHTML = '';
@@ -86,16 +93,15 @@ function handleClick(i) {
   if (turn !== 'player') return;
 
   if (selectedIndex === null) {
-    // 駒の選択
     if (cells[i] === 'P') {
       selectedIndex = i;
-      render(); // ハイライト表示
+      render();
     }
   } else {
-    // 移動先の指定
     const from = selectedIndex;
     const to = i;
-    if (to === from - 3 && (!cells[to] || cells[to] === 'E')) {
+
+    if (isValidMove(from, to)) {
       turn = 'animating';
       animateMove(from, to, 'P', () => {
         cells[from] = null;
@@ -107,20 +113,20 @@ function handleClick(i) {
       });
     } else {
       selectedIndex = null;
-      render(); // 選択解除
+      render();
     }
   }
 }
 
 function isValidMove(from, to) {
-  return to === from - 3 && (cells[to] === null || cells[to] === 'E');
+  return to === from - 5 && (!cells[to] || cells[to] === 'E');
 }
 
 function enemyMove() {
   for (let i = 0; i < 6; i++) {
-    if (cells[i] === 'E' && (!cells[i + 3] || cells[i + 3] === 'P')) {
+    if (cells[i] === 'E' && (!cells[i + 5] || cells[i + 5] === 'P')) {
       const from = i;
-      const to = i + 3;
+      const to = i + 5;
       turn = 'animating';
       animateMove(from, to, 'E', () => {
         cells[from] = null;
@@ -150,13 +156,14 @@ function animateMove(from, to, piece, callback) {
   const fromRect = fromCell.getBoundingClientRect();
   const toRect = toCell.getBoundingClientRect();
 
-  svg.style.left = `${fromRect.left - boardRect.left}px`;
-  svg.style.top  = `${fromRect.top  - boardRect.top}px`;
+  svg.style.left = `${fromCell.offsetLeft}px`;
+  svg.style.top  = `${fromCell.offsetTop}px`;
+
   board.appendChild(svg);
 
   requestAnimationFrame(() => {
-    svg.style.left = `${toRect.left - boardRect.left}px`;
-    svg.style.top  = `${toRect.top  - boardRect.top}px`;
+    svg.style.left = `${toCell.offsetLeft}px`;
+    svg.style.top  = `${toCell.offsetTop}px`;
   });
 
   setTimeout(() => {
