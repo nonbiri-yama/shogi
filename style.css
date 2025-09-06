@@ -27,12 +27,13 @@ body {
 .koma-svg {
   width: 80px;
   height: 80px;
+  pointer-events: none;
 }
 
-.player .koma-svg {
+.player.koma-svg {
   transform: rotate(0deg);
 }
 
-.enemy .koma-svg {
+.enemy.koma-svg {
   transform: rotate(180deg);
 }

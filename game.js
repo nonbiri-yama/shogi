@@ -17,11 +17,9 @@ function render() {
     cell.className = 'cell';
 
     if (piece === 'P') {
-      cell.classList.add('player');
-      cell.appendChild(createKomaSVG('歩'));
+      cell.appendChild(createKomaSVG('歩', 'player'));
     } else if (piece === 'E') {
-      cell.classList.add('enemy');
-      cell.appendChild(createKomaSVG('歩'));
+      cell.appendChild(createKomaSVG('歩', 'enemy'));
     }
 
     cell.onclick = () => handleClick(i);
@@ -29,11 +27,12 @@ function render() {
   });
 }
 
-function createKomaSVG(text) {
+function createKomaSVG(text, role) {
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
   svg.setAttribute("viewBox", "0 0 100 100");
   svg.classList.add("koma-svg");
+  svg.classList.add(role); // 'player' or 'enemy'
 
   const polygon = document.createElementNS(svgNS, "polygon");
   polygon.setAttribute("points", "50,5 95,25 95,95 5,95 5,25");
@@ -94,35 +93,28 @@ function animateMove(from, to, piece, callback) {
   const fromCell = board.children[from];
   const toCell = board.children[to];
 
-  fromCell.innerHTML = '';
+  fromCell.innerHTML = ''; // 元のマスを即座に消す
 
-  const wrapper = document.createElement('div');
-  wrapper.className = 'cell';
-  wrapper.style.position = 'absolute';
-  wrapper.style.zIndex = '10';
-  wrapper.style.transition = 'all 0.5s ease';
-
-  if (piece === 'P') wrapper.classList.add('player');
-  else wrapper.classList.add('enemy');
-
-  const svg = createKomaSVG('歩');
-  wrapper.appendChild(svg);
+  const svg = createKomaSVG('歩', piece === 'P' ? 'player' : 'enemy');
+  svg.style.position = 'absolute';
+  svg.style.zIndex = '10';
+  svg.style.transition = 'all 0.5s ease';
 
   const boardRect = board.getBoundingClientRect();
   const fromRect = fromCell.getBoundingClientRect();
   const toRect = toCell.getBoundingClientRect();
 
-  wrapper.style.left = `${fromRect.left - boardRect.left}px`;
-  wrapper.style.top = `${fromRect.top - boardRect.top}px`;
-  board.appendChild(wrapper);
+  svg.style.left = `${fromRect.left - boardRect.left}px`;
+  svg.style.top  = `${fromRect.top  - boardRect.top}px`;
+  board.appendChild(svg);
 
   requestAnimationFrame(() => {
-    wrapper.style.left = `${toRect.left - boardRect.left}px`;
-    wrapper.style.top = `${toRect.top - boardRect.top}px`;
+    svg.style.left = `${toRect.left - boardRect.left}px`;
+    svg.style.top  = `${toRect.top  - boardRect.top}px`;
   });
 
   setTimeout(() => {
-    board.removeChild(wrapper);
+    board.removeChild(svg);
     callback();
     render();
   }, 500);
@@ -136,3 +128,4 @@ function checkWin() {
 }
 
 render();
+
