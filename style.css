@@ -24,30 +24,15 @@ body {
   justify-content: center;
 }
 
-.koma {
+.koma-svg {
   width: 80px;
   height: 80px;
-  background-color: #f5deb3;
-  clip-path: polygon(
-    50% 0%,
-    100% 25%,
-    100% 100%,
-    0% 100%,
-    0% 25%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  border: 2px solid #333;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.player .koma {
+.player .koma-svg {
   transform: rotate(0deg);
 }
 
-.enemy .koma {
+.enemy .koma-svg {
   transform: rotate(180deg);
 }

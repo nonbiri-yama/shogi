@@ -1,6 +1,6 @@
 const board = document.getElementById('board');
 let cells = Array(9).fill(null);
-let turn = 'player'; // 'player', 'enemy', or 'animating'
+let turn = 'player';
 
 // 初期配置
 cells[6] = 'P';
@@ -16,18 +16,43 @@ function render() {
     const cell = document.createElement('div');
     cell.className = 'cell';
 
-    if (piece === 'P' || piece === 'E') {
-      const koma = document.createElement('div');
-      koma.className = 'koma';
-      koma.textContent = '歩';
-      if (piece === 'P') cell.classList.add('player');
-      else cell.classList.add('enemy');
-      cell.appendChild(koma);
+    if (piece === 'P') {
+      cell.classList.add('player');
+      cell.appendChild(createKomaSVG('歩'));
+    } else if (piece === 'E') {
+      cell.classList.add('enemy');
+      cell.appendChild(createKomaSVG('歩'));
     }
 
     cell.onclick = () => handleClick(i);
     board.appendChild(cell);
   });
+}
+
+function createKomaSVG(text) {
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.classList.add("koma-svg");
+
+  const polygon = document.createElementNS(svgNS, "polygon");
+  polygon.setAttribute("points", "50,5 95,25 95,95 5,95 5,25");
+  polygon.setAttribute("fill", "#f5deb3");
+  polygon.setAttribute("stroke", "#333");
+  polygon.setAttribute("stroke-width", "4");
+
+  const label = document.createElementNS(svgNS, "text");
+  label.setAttribute("x", "50");
+  label.setAttribute("y", "65");
+  label.setAttribute("text-anchor", "middle");
+  label.setAttribute("font-size", "32");
+  label.setAttribute("font-weight", "bold");
+  label.setAttribute("fill", "#000");
+  label.textContent = text;
+
+  svg.appendChild(polygon);
+  svg.appendChild(label);
+  return svg;
 }
 
 function handleClick(i) {
@@ -69,25 +94,19 @@ function animateMove(from, to, piece, callback) {
   const fromCell = board.children[from];
   const toCell = board.children[to];
 
-  fromCell.innerHTML = ''; // 元のマスを即座に消す
+  fromCell.innerHTML = '';
 
-  // ラッパー（.cell）を作成
   const wrapper = document.createElement('div');
   wrapper.className = 'cell';
   wrapper.style.position = 'absolute';
   wrapper.style.zIndex = '10';
   wrapper.style.transition = 'all 0.5s ease';
 
-  // 駒（.koma）を作成
-  const koma = document.createElement('div');
-  koma.className = 'koma';
-  koma.textContent = '歩';
-
-  // 向きのクラスをラッパーに付与
   if (piece === 'P') wrapper.classList.add('player');
   else wrapper.classList.add('enemy');
 
-  wrapper.appendChild(koma);
+  const svg = createKomaSVG('歩');
+  wrapper.appendChild(svg);
 
   const boardRect = board.getBoundingClientRect();
   const fromRect = fromCell.getBoundingClientRect();
@@ -117,4 +136,3 @@ function checkWin() {
 }
 
 render();
-
