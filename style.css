@@ -37,3 +37,11 @@ body {
 .enemy.koma-svg {
   transform: rotate(180deg);
 }
+
+.cell.selected {
+  outline: 3px solid blue;
+}
+
+.cell.valid-move {
+  background-color: #e0ffe0;
+}

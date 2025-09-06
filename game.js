@@ -16,6 +16,10 @@ function render() {
     const cell = document.createElement('div');
     cell.className = 'cell';
 
+    if (i === selectedIndex) {
+      cell.classList.add('selected');
+    }
+
     if (piece === 'P') {
       cell.appendChild(createKomaSVG('歩', 'player'));
     } else if (piece === 'E') {
@@ -54,20 +58,40 @@ function createKomaSVG(text, role) {
   return svg;
 }
 
-function handleClick(i) {
-  if (turn !== 'player' || cells[i] !== 'P') return;
+let selectedIndex = null;
 
-  const target = i - 3;
-  if (target >= 0 && (!cells[target] || cells[target] === 'E')) {
-    turn = 'animating';
-    animateMove(i, target, 'P', () => {
-      cells[i] = null;
-      cells[target] = 'P';
-      checkWin();
-      turn = 'enemy';
-      setTimeout(enemyMove, 100);
-    });
+function handleClick(i) {
+  if (turn !== 'player') return;
+
+  if (selectedIndex === null) {
+    // 駒の選択
+    if (cells[i] === 'P') {
+      selectedIndex = i;
+      render(); // ハイライト表示
+    }
+  } else {
+    // 移動先の指定
+    const from = selectedIndex;
+    const to = i;
+    if (to === from - 3 && (!cells[to] || cells[to] === 'E')) {
+      turn = 'animating';
+      animateMove(from, to, 'P', () => {
+        cells[from] = null;
+        cells[to] = 'P';
+        selectedIndex = null;
+        checkWin();
+        turn = 'enemy';
+        setTimeout(enemyMove, 100);
+      });
+    } else {
+      selectedIndex = null;
+      render(); // 選択解除
+    }
   }
+}
+
+function isValidMove(from, to) {
+  return to === from - 3 && (cells[to] === null || cells[to] === 'E');
 }
 
 function enemyMove() {
