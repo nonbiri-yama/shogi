@@ -26,6 +26,11 @@ function render() {
       cell.appendChild(createKomaSVG('歩', 'enemy'));
     }
 
+    // 移動可能マスに赤丸表示
+    if (selectedIndex !== null && isValidMove(selectedIndex, i)) {
+      cell.appendChild(createHintSVG());
+    }
+
     cell.onclick = () => handleClick(i);
     board.appendChild(cell);
   });
@@ -55,6 +60,23 @@ function createKomaSVG(text, role) {
 
   svg.appendChild(polygon);
   svg.appendChild(label);
+  return svg;
+}
+
+function createHintSVG() {
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.classList.add("hint-svg");
+
+  const circle = document.createElementNS(svgNS, "circle");
+  circle.setAttribute("cx", "50");
+  circle.setAttribute("cy", "50");
+  circle.setAttribute("r", "15");
+  circle.setAttribute("fill", "red");
+  circle.setAttribute("opacity", "0.6");
+
+  svg.appendChild(circle);
   return svg;
 }
 
