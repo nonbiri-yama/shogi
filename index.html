@@ -1,13 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>ミニ将棋</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shogi</title>
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <h1>3x3 将棋</h1>
-  <div id="board"></div>
-  <script src="game.js"></script>
+  <header class="toolbar">
+    <div class="left">
+      <label class="toggle">
+        <input type="checkbox" id="manualToggle" />
+        <span>手動モード（両軍を人が動かす）</span>
+      </label>
+      <label class="toggle">
+        <input type="checkbox" id="editToggle" />
+        <span>編集モード（合法手無視で配置）</span>
+      </label>
+    </div>
+    <div class="right">
+      <button id="undoBtn" title="一手戻す">◀ 戻る</button>
+      <button id="redoBtn" title="一手進む">▶ 進む</button>
+      <button id="resetBtn" title="初期局面に戻す">⏹ 初期化</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="board-wrap">
+      <div id="board" class="board" aria-label="将棋盤"></div>
+    </section>
+    <aside class="side">
+      <h3>手番: <span id="turnView">先手</span> <small id="modeView">CPUモード</small></h3>
+      <details open>
+        <summary>棋譜（最新が下）</summary>
+        <ol id="kifuView" class="kifu"></ol>
+      </details>
+      <details>
+        <summary>設定</summary>
+        <div class="settings">
+          <label>先手：<select id="blackSide">
+            <option value="human" selected>人間</option>
+            <option value="cpu">CPU</option>
+          </select></label>
+          <label>後手：<select id="whiteSide">
+            <option value="human">人間</option>
+            <option value="cpu" selected>CPU</option>
+          </select></label>
+        </div>
+      </details>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <small>Apache-2.0</small>
+  </footer>
+
+  <script src="./game.js"></script>
 </body>
 </html>
+
